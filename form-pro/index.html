@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="CSS/bootstrap.css" rel="stylesheet" />
+    <link href="CSS/estilos.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@8.7.0/dist/sweetalert2.min.css" rel="stylesheet" />
+    <!--FONTS-->
+    <link href="https://fonts.googleapis.com/css?family=Cinzel|Halant" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Cormorant+Unicase|Raleway&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" />
+  </head>
+  <body ng-app="reservaciones">
+    <div ng-controller="ReservacionesController" class="card col-md-10 mx-auto">
+      <form id="formConfirmacion" name="formConfirmacion" ng-show="formVisibility == '0'" class="fade code-input">
+        <div class="card-header" align="center">Confirmación</div>
+        <div class="card-instruction-lg" align="center">Ingresa tu de invitado<br />y da clic en buscar</div>
+        <br />
+        <br />
+        <div class="card-body col-md-12" align="center">
+          <input type="text" name="nombre" placeholder="Código" autocomplete="off" ng-model="data.Nombre" ng-change="changeActive(0)" required />
+        </div>
+        <div class="card-footer col-md-12 padding-top-30" align="right">
+          <button type="submit" id="btnBuscar" class="btn btn-primary" ng-click="buscarNombre()" ng-disabled="!btnActive">Buscar</button>
+        </div>
+        <div class="col-md-12 padding-top-30" align="right">
+          <div class="instruccion" align="center">Usa el código <span class="highlighted-text">LG8360</span> para probar nuestro formulario de confirmaciones</div>
+        </div>
+      </form>
+      <form id="formConfirmacion" name="formConfirmacion" ng-show="formVisibility == '1'" class="fade mobile-800-h">
+        <div class="card-header" align="center">INVITACIÓN</div>
+        <div class="guest-header" align="center">{{rotulo.Nombre}}</div>
+        <br />
+        <div class="mobile-wrap" style="display: flex; justify-content: space-evenly">
+          <div class="couple-message" style="text-align: center; background: rgba(0, 0, 0, 0.2); padding: 2%">
+            <p>{{rotulo.MensajeNovia}}</p>
+          </div>
+        </div>
+        <div class="card-footer row col-md-12">
+          <button type="submit" id="btnBack" class="btn btn-primary" ng-click="cambiar(0, 'b')">Regresar</button>
+          <button type="submit" id="btnResumen" class="btn btn-primary mobile-top-10" ng-click="cambiar(2, 'f')">Continuar</button>
+        </div>
+      </form>
+      <form id="formConfirmacion" name="formConfirmacion" ng-show="formVisibility == '2'" class="fade mobile-800-h">
+        <div class="card-header" align="center">PASES</div>
+        <div class="mobile-wrap" style="display: flex; justify-content: space-evenly">
+          <div class="total-tickets">
+            <div class="mobile-only" style="margin-bottom: 20px"></div>
+            <hr />
+            <div class="card-body" align="center" style="padding: 2%">
+              <div class="row col-md-12">
+                <div class="col-md-6 col-sm-6">
+                  <h6>Adultos</h6>
+                  <p class="total">{{rotulo.AdultosInvitados}} PASES</p>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                  <h6 class="mobile-top-20">Niños</h6>
+                  <p class="total">{{rotulo.NinosInvitados}} PASES</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer row col-md-12">
+          <button type="submit" id="btnBack" class="btn btn-primary" ng-click="cambiar(1, 'b')">Regresar</button>
+          <button type="submit" id="btnResumen" class="btn btn-primary mobile-top-10" ng-click="cambiar(3, 'f')">Continuar</button>
+        </div>
+      </form>
+      <form id="formConfirmacion" name="formConfirmacion" ng-show="formVisibility == '3'" class="fade">
+        <div class="card-header sm" align="center">Confirmación de Invitados</div>
+        <div class="card-instruction" align="center"><p>Por favor indica quiénes asistirán</p></div>
+        <hr />
+        <div class="card-body guest-confirm padding-top-10" align="left">
+          <div class="row">
+            <div class="col-md-12 adults-guests">
+              <div class="row">
+                <div class="col-md-12">
+                  <h6 class="guest-kind">Adultos</h6>
+                </div>
+              </div>
+              <div class="row guest-row" ng-repeat="invitado in adultos">
+                <div class="col-md-8 col-sm-12">
+                  <h6 class="guest-name">{{invitado.Nombre}}</h6>
+                </div>
+                <div class="col-md-4" style="display: flex; justify-content: flex-end">
+                  <div class="col-md-6 col-sm-6" style="display: flex; justify-content: flex-end">
+                    <span ng-show="invitado.Confirmado" ng-click="alternarConfirmacion(invitado, 0)"><i class="fa fa-check-square" style="margin-right: 5px; margin-left: 5px"></i></span>
+                    <span ng-show="!invitado.Confirmado" ng-click="alternarConfirmacion(invitado, 1)"><i class="fa fa-square-o" style="margin-right: 5px; margin-left: 5px"></i></span>
+                    Sí
+                  </div>
+                  <div class="col-md-6 col-sm-6" style="display: flex; justify-content: flex-end">
+                    <span ng-show="!invitado.Confirmado" ng-click="alternarConfirmacion(invitado, 1)"><i class="fa fa-check-square" style="margin-right: 5px; margin-left: 5px"></i></span>
+                    <span ng-show="invitado.Confirmado" ng-click="alternarConfirmacion(invitado, 0)"><i class="fa fa-square-o" style="margin-right: 5px; margin-left: 5px"></i></span>
+                    No
+                  </div>
+                </div>
+              </div>
+              <br />
+            </div>
+          </div>
+        </div>
+        <div class="card-footer row">
+          <button type="submit" id="btnBack" class="btn btn-primary" ng-click="cambiar(2, 'b')">Regresar</button>
+          <button type="submit" id="btnGuardar" class="btn btn-primary mobile-top-10" ng-click="cambiar(4, 'f')">Continuar</button>
+        </div>
+      </form>
+      <form id="formConfirmacion" name="formConfirmacion" ng-show="formVisibility == '4'" class="fade">
+        <div class="card-header sm" align="center">Confirmación de Invitados</div>
+        <div class="card-instruction" align="center"><p>Por favor indica quiénes asistirán</p></div>
+        <hr />
+        <div class="card-body guest-confirm padding-top-10" align="left">
+          <div class="row">
+            <div class="col-md-12 children-guests">
+              <div class="row">
+                <div class="col-md-12">
+                  <h6 class="guest-kind">Niños</h6>
+                </div>
+              </div>
+              <div class="row guest-row" ng-repeat="invitado in ninos">
+                <div class="col-md-8 col-sm-12">
+                  <h6 class="guest-name">{{invitado.Nombre}}</h6>
+                </div>
+                <div class="col-md-4" style="display: flex; justify-content: flex-end">
+                  <div class="col-md-6 col-sm-6" style="display: flex; justify-content: flex-end">
+                    <span ng-show="invitado.Confirmado" ng-click="alternarConfirmacion(invitado, 0)"><i class="fa fa-check-square" style="margin-right: 5px; margin-left: 5px"></i></span>
+                    <span ng-show="!invitado.Confirmado" ng-click="alternarConfirmacion(invitado, 1)"><i class="fa fa-square-o" style="margin-right: 5px; margin-left: 5px"></i></span>
+                    Sí
+                  </div>
+                  <div class="col-md-6 col-sm-6" style="display: flex; justify-content: flex-end">
+                    <span ng-show="!invitado.Confirmado" ng-click="alternarConfirmacion(invitado, 1)"><i class="fa fa-check-square" style="margin-right: 5px; margin-left: 5px"></i></span>
+                    <span ng-show="invitado.Confirmado" ng-click="alternarConfirmacion(invitado, 0)"><i class="fa fa-square-o" style="margin-right: 5px; margin-left: 5px"></i></span>
+                    No
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer row">
+          <button type="submit" id="btnBack" class="btn btn-primary" ng-click="cambiar(3, 'b')">Regresar</button>
+          <button type="submit" id="btnGuardar" class="btn btn-primary mobile-top-10" ng-click="cambiar(5, 'f')">Continuar</button>
+        </div>
+      </form>
+      <form id="formConfirmacion" name="formConfirmacion" ng-show="formVisibility == '5'" class="fade">
+        <div class="card-header sm" align="center">Estás por confirmar</div>
+        <div class="card-body padding-top-10">
+          <div class="row col-md-11" style="display: flex; justify-content: center; margin: 20px auto">
+            <div class="guest-resume">
+              <div class="row">
+                <div class="col-md-12">
+                  <h6 class="guest-kind sm"><span class="num-lg">{{adultosConfirmados.length}}</span>&nbsp;&nbsp;Adulto(s)</h6>
+                </div>
+              </div>
+              <div class="row" ng-repeat="invitado in adultosConfirmados">
+                <div class="col-md-12">
+                  <h6 class="guest-name sm">{{invitado.Nombre}}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer row">
+          <button type="submit" id="btnBack" class="btn btn-primary" ng-click="cambiar(4, 'b')">Regresar</button>
+          <button type="submit" id="btnGuardar" class="btn btn-primary mobile-top-10" ng-click="cambiar(6, 'f')">Continuar</button>
+        </div>
+      </form>
+      <form id="formConfirmacion" name="formConfirmacion" ng-show="formVisibility == '6'" class="fade">
+        <div class="card-header sm" align="center">Estás por confirmar</div>
+        <div class="card-body padding-top-10">
+          <div class="row col-md-11" style="display: flex; justify-content: center; margin: 20px auto">
+            <div class="guest-resume">
+              <div class="row">
+                <div class="col-md-12">
+                  <h6 class="guest-kind sm"><span class="num-lg">{{ninosConfirmados.length}}</span>&nbsp;&nbsp;Niño(s)</h6>
+                </div>
+              </div>
+              <div class="row" ng-repeat="invitado in ninosConfirmados">
+                <div class="col-md-12">
+                  <h6 class="guest-name sm">{{invitado.Nombre}}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer row">
+          <button type="submit" id="btnBack" class="btn btn-primary" ng-click="cambiar(5, 'b')">Regresar</button>
+          <button type="submit" id="btnGuardar" class="btn btn-primary mobile-top-10" ng-click="cambiar(7, 'f')">Continuar</button>
+        </div>
+      </form>
+      <form id="formConfirmacion" name="formConfirmacion" ng-show="formVisibility == '7'" class="fade">
+        <div class="card-header sm" align="center">Deja un mensaje para los novios</div>
+        <div class="card-body padding-top-10">
+          <div class="row col-md-11" style="display: flex; justify-content: center; margin: 20px auto">
+            <div class="guests-message">
+              <div class="card-body" align="center">
+                <!--<input type="text" name="mensaje" placeholder="Mensaje" ng-model="data.Mensaje" />-->
+                <textarea name="mensaje" placeholder="Mensaje" ng-model="contenedor.Mensaje"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer row">
+          <button type="submit" id="btnBack" class="btn btn-primary" ng-click="cambiar(6, 'b')">Regresar</button>
+          <button type="submit" id="btnGuardar" class="btn btn-primary mobile-top-10" ng-click="confirmar()">Confirmar</button>
+        </div>
+      </form>
+    </div>
+
+    <script src="Scripts/Shared/jquery.js"></script>
+    <script src="Scripts/Shared/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/82d3907e47.js" crossorigin="anonymous"></script>
+    <script src="Scripts/Shared/angular.min.js"></script>
+    <script src="https://smtpjs.com/v2/smtp.js"></script>
+    <script src="Scripts/Shared/angular-messages.min.js"></script>
+    <script src="Scripts/Shared/angular-animate.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8.7.0/dist/sweetalert2.all.min.js"></script>
+    <script src="Scripts/Shared/app.js"></script>
+    <script src="Scripts/Controllers/reservacionController.js"></script>
+  </body>
+</html>
